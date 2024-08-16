@@ -65,6 +65,7 @@ def kernel_images(
         vendor_dlkm_archive = None,
         vendor_dlkm_etc_files = None,
         vendor_dlkm_fs_type = None,
+        vendor_dlkm_gki_modules_list = None,
         vendor_dlkm_modules_list = None,
         vendor_dlkm_modules_blocklist = None,
         vendor_dlkm_props = None,
@@ -275,6 +276,13 @@ def kernel_images(
         vendor_dlkm_archive: If set, enable archiving the vendor_dlkm staging directory.
         vendor_dlkm_fs_type: Supported filesystems for `vendor_dlkm.img` are `ext4` and `erofs`. Defaults to `ext4` if not specified.
         vendor_dlkm_etc_files: Files that need to be copied to `vendor_dlkm.img` etc/ directory.
+        vendor_dlkm_gki_modules_list: A file containing the list of base kernel
+          modules that should be copied to the `vendor_dlkm` image. If this
+          file is not provided, then no signed base kernel modules will be
+          included in the `vendor_dlkm` image.
+
+          Note, this attribute can only be used if `build_system_dlkm` is
+          `False`. This is useful for devices within no `system_dlkm` partition.
         vendor_dlkm_modules_list: location of an optional file
           containing the list of kernel modules which shall be copied into a
           `vendor_dlkm` partition image. Any modules passed into `MODULES_LIST` which
@@ -474,6 +482,7 @@ def kernel_images(
             archive = vendor_dlkm_archive,
             etc_files = vendor_dlkm_etc_files,
             fs_type = vendor_dlkm_fs_type,
+            vendor_dlkm_gki_modules_list = vendor_dlkm_gki_modules_list,
             modules_list = vendor_dlkm_modules_list,
             modules_blocklist = vendor_dlkm_modules_blocklist,
             props = vendor_dlkm_props,
