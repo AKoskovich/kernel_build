@@ -289,7 +289,7 @@ def _build_boot_or_vendor_boot(
     if kernel_vendor_cmdline:
         kernel_vendor_cmdline_cmd = """
             KERNEL_VENDOR_CMDLINE={kernel_vendor_cmdline}
-        """.format(kernel_vendor_cmdline = kernel_vendor_cmdline)
+        """.format(kernel_vendor_cmdline = shell.quote(kernel_vendor_cmdline))
 
     header_version_cmd = ""
     if header_version:
