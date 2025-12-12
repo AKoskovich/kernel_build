@@ -51,6 +51,8 @@ def _build_boot_or_vendor_boot(
         vendor_bootconfig_file = None,
         kernel_vendor_cmdline = None,
         header_version = None,
+        os_version = None,
+        os_patch_level = None,
         initramfs_vendor_ramdisk_fragment_name = None,
         vendor_fstab = None,
         _search_and_cp_output):
@@ -297,6 +299,18 @@ def _build_boot_or_vendor_boot(
             BOOT_IMAGE_HEADER_VERSION={header_version}
         """.format(header_version = header_version)
 
+    os_version_cmd = ""
+    if os_version:
+        os_version_cmd = """
+            MKBOOTIMG_EXTRA_ARGS="${{MKBOOTIMG_EXTRA_ARGS:-}} --os_version {os_version}"
+        """.format(os_version=os_version)
+
+    os_patch_level_cmd = ""
+    if os_patch_level:
+        os_patch_level_cmd = """
+            MKBOOTIMG_EXTRA_ARGS="${{MKBOOTIMG_EXTRA_ARGS:-}} --os_patch_level {os_patch_level}"
+        """.format(os_patch_level=os_patch_level)
+
     vendor_fstab_cmd = ""
     if vendor_fstab:
         vendor_fstab_cmd = """
@@ -327,6 +341,8 @@ def _build_boot_or_vendor_boot(
                  {kernel_vendor_cmdline_cmd}
                  {header_version_cmd}
                  {vendor_fstab_cmd}
+                 {os_verison_cmd}
+                 {os_patch_level_cmd}
                  build_boot_images
                )
                {search_and_cp_output} --srcdir ${{DIST_DIR}} --dstdir {outdir} {outs}
@@ -348,6 +364,8 @@ def _build_boot_or_vendor_boot(
         kernel_vendor_cmdline_cmd = kernel_vendor_cmdline_cmd,
         header_version_cmd = header_version_cmd,
         vendor_fstab_cmd = vendor_fstab_cmd,
+        os_verison_cmd = os_version_cmd,
+        os_patch_level_cmd = os_patch_level_cmd,
     )
 
     debug.print_scripts_subrule(command)
@@ -408,6 +426,8 @@ def _boot_images_impl(ctx):
         ramdisk_compression = ctx.attr.ramdisk_compression,
         ramdisk_compression_args = ctx.attr.ramdisk_compression_args,
         dtb_image_file = ctx.file.dtb_image,
+        os_version = ctx.attr.os_version,
+        os_patch_level = ctx.attr.os_patch_level,
     )
 
 boot_images = rule(
@@ -498,6 +518,12 @@ Execute `build_boot_images` in `build_utils.sh`.""",
 
                 See [`dtb_image`](#dtb_image).""",
             allow_single_file = True,
+        ),
+        "os_version": attr.string(
+            doc = """Adds operating system version to the boot image header.""",
+        ),
+        "os_patch_level": attr.string(
+            doc = """Adds security patch level to the boot image header.""",
         ),
     },
     subrules = [

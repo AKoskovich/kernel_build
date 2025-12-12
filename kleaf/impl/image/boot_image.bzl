@@ -44,6 +44,8 @@ def _boot_image_impl(ctx):
         dtb_image_file = None,
         vendor_bootconfig_file = None,
         header_version = ctx.attr.header_version,
+        os_version = ctx.attr.os_version,
+        os_patch_level = ctx.attr.os_patch_level,
     )
 
 boot_image = rule(
@@ -123,6 +125,12 @@ boot_image = rule(
             doc = """Name of the boot partition.
 
                 Must be set when `avb_sign_boot_img` is True.""",
+        ),
+        "os_version": attr.string(
+            doc = """Adds operating system version to the boot image header.""",
+        ),
+        "os_patch_level": attr.string(
+            doc = """Adds security patch level to the boot image header.""",
         ),
     },
     subrules = [
